@@ -1,0 +1,31 @@
+{
+  "name": "rafters-2d",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@fontsource/roboto": "^5.2.5",
+    "@mui/icons-material": "^6.4.7",
+    "@mui/material": "^6.4.7",
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-opener": "^2",
+    "konva": "^9.3.18",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-konva": "^19.0.3",
+    "zustand": "^5.0.3"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2",
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^6.0.3"
+  }
+}
