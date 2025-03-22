@@ -35,7 +35,6 @@ export default function AppBar() {
   const setOpen = useAppStore((state) => state.setOpen);
 
   const handleDrawerOpen = () => {
-    console.log("Getting here");
     setOpen(true);
   };
 

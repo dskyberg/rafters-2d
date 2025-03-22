@@ -7,22 +7,26 @@ const toInt = (value) => (typeof value === "string" ? parseInt(toZero(value), 10
 
 export const useRafterDataStore = create((set, get) => ({
   pitch: 7,
-  span: 360,
-  wall_width: 6,
-  beam_thickness: 6,
-  beam_width: 12,
-  overhang: 18,
-  rafter_width: 10,
+  span: 360.0,
+  wall_width: 5.5,
+  beam_thickness: 5.5,
+  beam_width: 11.25,
+  overhang: 18.0,
+  rafter_width: 9.25,
   metric: false,
   rafter: null,
   scaleFactor: 3,
   rafterVisible: true,
   wallsVisible: true,
   dimensionsVisible: true,
+  trianglesVisible: false,
+
+  setMetric: (value) => set({ metric: value }),
 
   toggleRafterVisible: () => set({ rafterVisible: !get().rafterVisible }),
   toggleWallsVisible: () => set({ wallsVisible: !get().wallsVisible }),
   toggleDimensionsVisible: () => set({ dimensionsVisible: !get().dimensionsVisible }),
+  toggleTrianglesVisible: () => set({ trianglesVisible: !get().trianglesVisible }),
 
   zoomIn: () => set({ scaleFactor: get().scaleFactor + 1 }),
   zoomOut: () => set({ scaleFactor: get().scaleFactor - 1 }),
@@ -39,9 +43,6 @@ export const useRafterDataStore = create((set, get) => ({
 
   setValue: (value, input) => {
     switch (value) {
-      case "metric":
-        set({ metric: input });
-        break;
       case "pitch":
         set({ pitch: toInt(input) });
         break;
@@ -70,8 +71,6 @@ export const useRafterDataStore = create((set, get) => ({
   },
   getValue: (value) => {
     switch (value) {
-      case "metric":
-        return get().metric;
       case "pitch":
         return get().pitch;
       case "span":

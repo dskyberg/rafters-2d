@@ -5,6 +5,9 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 import { useRafterDataStore } from "../stores/rafter_data";
 import { toInches } from "../utils";
+import DimensionsLayer from "./dimensions_layer";
+import WallsLayer from "./walls_layer";
+import TrianglesLayer from "./trianglesLayer";
 
 export default function Rafter2D() {
   let theme = useTheme();
@@ -47,17 +50,8 @@ export default function Rafter2D() {
   let start_x = dimensionPadding;
   let max_y = rafter.rise + rafter.tail.rise + rafter.angled_width;
 
-  let big_t = [
-    [start_x + scale(overhang), start_y + scale(max_y - rafter.birds_mouth.seat_start)],
-    [start_x + scale(overhang + rafter.run), start_y + scale(max_y - rafter.birds_mouth.seat_start)],
-    [start_x + scale(overhang + rafter.run), start_y + scale(rafter.angled_width)],
-  ].flat();
-
-  let little_t = [
-    [start_x, start_y + scale(max_y)],
-    [start_x + scale(overhang), start_y + scale(max_y)],
-    [start_x + scale(overhang), start_y + scale(max_y - rafter.birds_mouth.seat_start)],
-  ].flat();
+  let x = overhang;
+  let y = max_y - rafter.birds_mouth.seat_start;
 
   let rafter_points = [
     [start_x, start_y + scale(rafter.rise + rafter.tail.rise + rafter.angled_width)],
@@ -66,8 +60,6 @@ export default function Rafter2D() {
     [start_x + scale(overhang + rafter.run), start_y + scale(rafter.angled_width)],
   ].flat();
 
-  let x = overhang;
-  let y = max_y - rafter.birds_mouth.seat_start;
   let birds_mouth_points = [
     [start_x + scale(x), start_y + scale(y)],
     [start_x + scale(x), start_y + scale(y - rafter.birds_mouth.heel)],
@@ -78,52 +70,13 @@ export default function Rafter2D() {
     <div sx={{ display: "flex", flexDirection: "column", justifyContent: "start" }}>
       <div id="rafter-container">
         <Stage container="rafter-container" width={windowSize.width} height={windowSize.height}>
-          <Layer visible={dimensionsVisible}>
-            <Line
-              points={[
-                start_x + scale(overhang + rafter.run + beam_thickness + 2),
-                start_y + 0,
-
-                start_x + scale(overhang + rafter.run + beam_thickness + 5),
-                start_y + 0,
-
-                start_x + scale(overhang + rafter.run + beam_thickness + 5),
-                start_y + scale(rafter.total_height),
-
-                start_x + scale(overhang + rafter.run + beam_thickness + 2),
-                start_y + scale(rafter.total_height),
-              ]}
-              stroke="black"
-            />
-            <Text
-              x={start_x + scale(overhang + rafter.run + beam_thickness + 7)}
-              y={start_y + scale(rafter.total_height / 2)}
-              text={toInches(rafter.total_height)}
-              fontSize={12}
-              fill="black"
-            />
-          </Layer>
-
+          <DimensionsLayer />
           <Layer visible={rafterVisible}>
             <Line points={rafter_points} closed strokeWidth={0} fill="grey" />
             <Line points={birds_mouth_points} closed stroke="white" fill="white" />
           </Layer>
-          <Layer visible={wallsVisible}>
-            <Rect
-              x={start_x + scale(overhang + rafter.run)}
-              y={start_y}
-              height={scale(beam_width)}
-              width={scale(beam_thickness)}
-              stroke="red"
-            />
-            <Rect
-              x={start_x + scale(overhang)}
-              y={start_y + scale(y - rafter.birds_mouth.heel)}
-              height={scale(36)}
-              width={scale(wall_width)}
-              stroke="red"
-            />
-          </Layer>
+          <WallsLayer />
+          <TrianglesLayer />
         </Stage>
       </div>
     </div>

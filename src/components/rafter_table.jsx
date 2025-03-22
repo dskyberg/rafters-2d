@@ -54,18 +54,19 @@ export default function Raftertable({ rafter }) {
             <TableBody>
               <RafterRow title={"Angle"} value={`${rafter.angle}°`} />
               <RafterRow title={"Angled Width"} value={toInches(rafter.angled_width)} />
-              <RafterRow title={"Height"} value={toInches(rafter.total_height)} />
-              <RafterRow title={"Length"} value={toInches(rafter.total_length)} />
+              <RafterRow title={"Bird's Mouth Heel"} value={toInches(rafter.birds_mouth.heel)} />
+              <RafterRow title={"Bird's Mouth Seat"} value={toInches(rafter.birds_mouth.seat)} />
+              <RafterRow title="Distance to Bird's Mouth" value={toInches(rafter.run)} />
             </TableBody>
           </Table>
         </TableContainer>
         <TableContainer>
           <Table>
             <TableBody>
-              <RafterRow title={"Angle"} value={`${rafter.angle}°`} />
+              <RafterRow title={"Ridge Beam Height"} value={toInches(rafter.ridge_beam_height)} />
               <RafterRow title={"Angled Width"} value={toInches(rafter.angled_width)} />
-              <RafterRow title={"Height"} value={toInches(rafter.total_height)} />
-              <RafterRow title={"Length"} value={toInches(rafter.total_length)} />
+              <RafterRow title={"Total Height"} value={toInches(rafter.total_height)} />
+              <RafterRow title={"Total Length"} value={toInches(rafter.total_length)} />
             </TableBody>
           </Table>
         </TableContainer>

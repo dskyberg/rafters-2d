@@ -15,6 +15,7 @@ import ZoomOutIcon from "@mui/icons-material/ZoomOut";
 import CalculateIcon from "@mui/icons-material/Calculate";
 import Tooltip from "@mui/material/Tooltip";
 import Checkbox from "@mui/material/Checkbox";
+import Box from "@mui/material/Box";
 
 import Raftertable from "./rafter_table";
 import { ToggleOn } from "@mui/icons-material";
@@ -24,16 +25,11 @@ const NumberField = styled(TextField)(({ theme }) => ({
   margin: theme.spacing(1),
 }));
 
-const MetricGroup = styled(RadioGroup)(({ theme }) => ({
-  margin: theme.spacing(1),
-}));
-
 export default function RafterInput() {
   const theme = useTheme();
   const {
     rafter,
     getRafter,
-    metric,
     pitch,
     span,
     wall_width,
@@ -43,14 +39,17 @@ export default function RafterInput() {
     rafter_width,
     setValue,
     getValue,
+    scaleFactor,
     zoomIn,
     zoomOut,
     rafterVisible,
     wallsVisible,
     dimensionsVisible,
+    trianglesVisible,
     toggleRafterVisible,
     toggleWallsVisible,
     toggleDimensionsVisible,
+    toggleTrianglesVisible,
   } = useRafterDataStore();
 
   useEffect(() => {
@@ -60,7 +59,6 @@ export default function RafterInput() {
 
   const handleCalc = () => {
     getRafter();
-    console.log("Rafter", rafter);
   };
 
   const handleZoomIn = () => {
@@ -68,7 +66,10 @@ export default function RafterInput() {
   };
 
   const handleZoomOut = () => {
-    zoomOut();
+    console.log("scaleFactor", scaleFactor);
+    if (scaleFactor > 2) {
+      zoomOut();
+    }
   };
 
   const handleRafterVisible = () => {
@@ -82,30 +83,14 @@ export default function RafterInput() {
   const handleDimensionsVisible = () => {
     toggleDimensionsVisible();
   };
-
-  const handleMetricChange = (e) => {
-    setValue("metric", e.target.value == "metric");
+  const handleTrianglesVisible = () => {
+    toggleTrianglesVisible();
   };
 
   return (
     <Stack>
       <Stack direction="row">
         <Stack>
-          <MetricGroup
-            row
-            name="metric-radio-group"
-            value={metric == true ? "metric" : "freedom_units"}
-            onChange={handleMetricChange}
-          >
-            <FormControlLabel
-              id="metric-radio-freedom-units"
-              value="freedom_units"
-              control={<Radio size="small" />}
-              label="Freedom Units"
-            />
-            <FormControlLabel id="metric-radio-metric" value="metric" control={<Radio size="small" />} label="Metric" />
-          </MetricGroup>
-
           <NumberField
             id="pitch"
             size="small"
@@ -167,62 +152,78 @@ export default function RafterInput() {
         </Stack>
         <Raftertable rafter={rafter} />
       </Stack>
-      <Stack direction="row" justifyContent={"end"}>
-        <Tooltip title="Toggle Rafter Visibility">
-          <FormControlLabel
-            label="Show Rafter"
-            control={
-              <Checkbox
-                checked={rafterVisible}
-                onChange={handleRafterVisible}
-                inputProps={{ "aria-label": "show-rafter" }}
-              />
-            }
-          />
-        </Tooltip>
+      <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+        <Stack direction="row" justifyContent={"end"}>
+          <Tooltip title="Toggle Rafter Visibility">
+            <FormControlLabel
+              label="Show Rafter"
+              control={
+                <Checkbox
+                  checked={rafterVisible}
+                  onChange={handleRafterVisible}
+                  inputProps={{ "aria-label": "show-rafter" }}
+                />
+              }
+            />
+          </Tooltip>
 
-        <Tooltip title="Toggle Walls Visibility">
-          <FormControlLabel
-            label="Show Walls"
-            control={
-              <Checkbox
-                checked={wallsVisible}
-                onChange={handleWallsVisible}
-                inputProps={{ "aria-label": "show-walls" }}
-              />
-            }
-          />
-        </Tooltip>
+          <Tooltip title="Toggle Walls Visibility">
+            <FormControlLabel
+              label="Show Walls"
+              control={
+                <Checkbox
+                  checked={wallsVisible}
+                  onChange={handleWallsVisible}
+                  inputProps={{ "aria-label": "show-walls" }}
+                />
+              }
+            />
+          </Tooltip>
 
-        <Tooltip title="Toggle Dimensions Visibility">
-          <FormControlLabel
-            label="Show Dimensions"
-            control={
-              <Checkbox
-                checked={dimensionsVisible}
-                onChange={handleDimensionsVisible}
-                inputProps={{ "aria-label": "show-dimensions" }}
-              />
-            }
-          />
-        </Tooltip>
+          <Tooltip title="Toggle Dimensions Visibility">
+            <FormControlLabel
+              label="Show Dimensions"
+              control={
+                <Checkbox
+                  checked={dimensionsVisible}
+                  onChange={handleDimensionsVisible}
+                  inputProps={{ "aria-label": "show-dimensions" }}
+                />
+              }
+            />
+          </Tooltip>
 
-        <Tooltip title="Calculate">
-          <IconButton aria-label="calculate" onClick={handleCalc}>
-            <CalculateIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Zoom In">
-          <IconButton arial-label="zoom-in" onClick={handleZoomIn}>
-            <ZoomInIcon />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Zoom Out">
-          <IconButton arial-label="zoom-out" onClick={handleZoomOut}>
-            <ZoomOutIcon />
-          </IconButton>
-        </Tooltip>
-      </Stack>
+          <Tooltip title="Toggle Triangles Visibility">
+            <FormControlLabel
+              label="Show Triangles"
+              control={
+                <Checkbox
+                  checked={trianglesVisible}
+                  onChange={handleTrianglesVisible}
+                  inputProps={{ "aria-label": "show-triangles" }}
+                />
+              }
+            />
+          </Tooltip>
+        </Stack>
+        <Stack direction="row" justifyContent={"end"}>
+          <Tooltip title="Calculate">
+            <IconButton aria-label="calculate" onClick={handleCalc}>
+              <CalculateIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Zoom In">
+            <IconButton arial-label="zoom-in" onClick={handleZoomIn}>
+              <ZoomInIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Zoom Out">
+            <IconButton arial-label="zoom-out" onClick={handleZoomOut}>
+              <ZoomOutIcon />
+            </IconButton>
+          </Tooltip>
+        </Stack>
+      </Box>
     </Stack>
   );
 }

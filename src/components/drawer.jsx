@@ -1,17 +1,14 @@
 import { styled, useTheme } from "@mui/material/styles";
 import MuiDrawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import { useAppStore } from "../stores/app";
+import { useRafterDataStore } from "../stores/rafter_data";
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -24,10 +21,19 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 export const drawerWidth = 240;
 
+const MetricGroup = styled(RadioGroup)(({ theme }) => ({
+  margin: theme.spacing(1),
+}));
+
 export default function Drawer() {
   const theme = useTheme();
   const open = useAppStore((state) => state.open);
   const setOpen = useAppStore((state) => state.setOpen);
+  const { metric, setMetric } = useRafterDataStore();
+
+  const handleMetricChange = (e) => {
+    setMetric(e.target.value == "metric");
+  };
 
   const handleDrawerClose = () => {
     setOpen(false);
@@ -53,27 +59,19 @@ export default function Drawer() {
         </IconButton>
       </DrawerHeader>
       <Divider />
-      <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {["All mail", "Trash", "Spam"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
+      <MetricGroup
+        name="metric-radio-group"
+        value={metric == true ? "metric" : "freedom_units"}
+        onChange={handleMetricChange}
+      >
+        <FormControlLabel
+          id="metric-radio-freedom-units"
+          value="freedom_units"
+          control={<Radio size="small" />}
+          label="Freedom Units"
+        />
+        <FormControlLabel id="metric-radio-metric" value="metric" control={<Radio size="small" />} label="Metric" />
+      </MetricGroup>
     </MuiDrawer>
   );
 }
