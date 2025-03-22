@@ -1,78 +1,128 @@
-import { useState, useEffect } from "react";
-import { invoke } from "@tauri-apps/api/core";
-
-import { Stage, Layer, Rect, Line } from "react-konva";
+import { Stage, Layer, Rect, Line, Text } from "react-konva";
 
 import { useTheme } from "@mui/material/styles";
-import { Stack, Button } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import { useRafterDataStore } from "../stores/rafter_data";
+import { toInches } from "../utils";
 
 export default function Rafter2D() {
   let theme = useTheme();
-  const [rafter, setRafter] = useState(null);
-  const [scaleFactor, setScaleFactor] = useState(3);
-  const { wall_height, pitch, span, wall_width, beam_thickness, beam_width, overhang, rafter_width } =
-    useRafterDataStore((state) => state);
+  const {
+    scaleFactor,
+    rafter,
+    getRafter,
+    wall_height,
+    pitch,
+    span,
+    wall_width,
+    beam_thickness,
+    beam_width,
+    overhang,
+    rafter_width,
+    rafterVisible,
+    wallsVisible,
+    dimensionsVisible,
+  } = useRafterDataStore((state) => state);
 
   const windowSize = { width: 1200, height: 800 };
-  const padding = parseInt(theme.spacing(2));
 
-  async function getRafter() {
-    let rafter = await invoke("get_rafter", {
-      cli: { pitch, span, wall_width, beam_thickness, beam_width, overhang, rafter_width },
-    });
-    console.log("rafter", rafter);
-    setRafter(rafter);
-  }
-
-  useEffect(() => {
-    getRafter();
-  }, []);
-
-  const handleCalc = () => {
-    getRafter();
-  };
+  // Add space to show dimensions.  This needs to be added to all
+  // the x and y coordinates.
+  const dimensionPadding = parseInt(theme.spacing(2));
 
   const scale = (inches) => {
     return inches * scaleFactor;
   };
 
   if (rafter == null) {
-    return <div>Waiting for rafter data...</div>;
+    return (
+      <div sx={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+        <CircularProgress />
+      </div>
+    );
   }
 
-  let rafter_points = [
-    [0, scale(rafter.total_height)],
-    [0, scale(rafter.total_height - rafter.angled_width)],
-    [scale(rafter.total_length), 0],
-    [scale(rafter.total_length), scale(rafter.angled_width)],
+  let start_y = dimensionPadding;
+  let start_x = dimensionPadding;
+  let max_y = rafter.rise + rafter.tail.rise + rafter.angled_width;
+
+  let big_t = [
+    [start_x + scale(overhang), start_y + scale(max_y - rafter.birds_mouth.seat_start)],
+    [start_x + scale(overhang + rafter.run), start_y + scale(max_y - rafter.birds_mouth.seat_start)],
+    [start_x + scale(overhang + rafter.run), start_y + scale(rafter.angled_width)],
   ].flat();
 
+  let little_t = [
+    [start_x, start_y + scale(max_y)],
+    [start_x + scale(overhang), start_y + scale(max_y)],
+    [start_x + scale(overhang), start_y + scale(max_y - rafter.birds_mouth.seat_start)],
+  ].flat();
+
+  let rafter_points = [
+    [start_x, start_y + scale(rafter.rise + rafter.tail.rise + rafter.angled_width)],
+    [start_x, start_y + scale(rafter.rise + rafter.tail.rise)],
+    [start_x + scale(overhang + rafter.run), start_y],
+    [start_x + scale(overhang + rafter.run), start_y + scale(rafter.angled_width)],
+  ].flat();
+
+  let x = overhang;
+  let y = max_y - rafter.birds_mouth.seat_start;
   let birds_mouth_points = [
-    [scale(overhang), scale(rafter.total_height - rafter.birds_mouth.seat_start)],
-    [scale(overhang), scale(rafter.total_height - rafter.birds_mouth.seat_start - rafter.birds_mouth.heel)],
-    [
-      scale(overhang + rafter.birds_mouth.seat),
-      scale(rafter.total_height - rafter.birds_mouth.seat_start - rafter.birds_mouth.heel),
-    ],
+    [start_x + scale(x), start_y + scale(y)],
+    [start_x + scale(x), start_y + scale(y - rafter.birds_mouth.heel)],
+    [start_x + scale(x + rafter.birds_mouth.seat), start_y + scale(y - rafter.birds_mouth.heel)],
   ].flat();
 
   return (
     <div sx={{ display: "flex", flexDirection: "column", justifyContent: "start" }}>
-      <Button onClick={handleCalc}>Calculate</Button>
       <div id="rafter-container">
         <Stage container="rafter-container" width={windowSize.width} height={windowSize.height}>
-          <Layer>
-            <Line points={rafter_points} closed stroke="green" />
+          <Layer visible={dimensionsVisible}>
+            <Line
+              points={[
+                start_x + scale(overhang + rafter.run + beam_thickness + 2),
+                start_y + 0,
+
+                start_x + scale(overhang + rafter.run + beam_thickness + 5),
+                start_y + 0,
+
+                start_x + scale(overhang + rafter.run + beam_thickness + 5),
+                start_y + scale(rafter.total_height),
+
+                start_x + scale(overhang + rafter.run + beam_thickness + 2),
+                start_y + scale(rafter.total_height),
+              ]}
+              stroke="black"
+            />
+            <Text
+              x={start_x + scale(overhang + rafter.run + beam_thickness + 7)}
+              y={start_y + scale(rafter.total_height / 2)}
+              text={toInches(rafter.total_height)}
+              fontSize={12}
+              fill="black"
+            />
+          </Layer>
+
+          <Layer visible={rafterVisible}>
+            <Line points={rafter_points} closed strokeWidth={0} fill="grey" />
+            <Line points={birds_mouth_points} closed stroke="white" fill="white" />
+          </Layer>
+          <Layer visible={wallsVisible}>
             <Rect
-              x={scale(rafter.total_length)}
-              y={0}
-              height={scale(rafter.beam.height)}
-              width={scale(rafter.beam.width)}
+              x={start_x + scale(overhang + rafter.run)}
+              y={start_y}
+              height={scale(beam_width)}
+              width={scale(beam_thickness)}
               stroke="red"
             />
-            <Line points={birds_mouth_points} closed stroke="green" />
+            <Rect
+              x={start_x + scale(overhang)}
+              y={start_y + scale(y - rafter.birds_mouth.heel)}
+              height={scale(36)}
+              width={scale(wall_width)}
+              stroke="red"
+            />
           </Layer>
         </Stage>
       </div>

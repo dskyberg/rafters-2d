@@ -21,12 +21,17 @@ pub fn pitch_from_angle(angle: f32) -> u32 {
     (angle.to_radians().tan() * 12.0) as u32
 }
 
-/// Given an angle and the run, calculate the rise and length
-pub fn calculate_rise_and_length(pitch: u32, run: f32) -> (f32, f32) {
+/// Given an angle and a side (rise or run), calculate the other side and length
+pub fn toa(pitch: u32, rise: Option<f32>, run: Option<f32>) -> (f32, f32) {
     let rad = (pitch as f32 / 12.0).atan();
-    let rise = rad.tan() * run;
-    let hypotenuse = (rise.powi(2) + run.powi(2)).sqrt();
-    (rise, hypotenuse)
+    let (side, other) = match (rise, run) {
+        (Some(opposite), None) => (opposite, opposite / rad.tan()),
+        (None, Some(adjacent)) => (adjacent, adjacent * rad.tan()),
+        _ => panic!("Either opposite or adjacent must be provided"),
+    };
+
+    let hypotenuse = (side.powi(2) + other.powi(2)).sqrt();
+    (other, hypotenuse)
 }
 
 #[allow(dead_code)]

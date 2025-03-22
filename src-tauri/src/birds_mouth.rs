@@ -26,21 +26,34 @@ impl BirdsMouth {
     /// and the seat is not greater than the top plate width.  Adjust the
     /// bird's mouth accordingly
     fn check_code(cli: &Cli) -> Self {
-        let _max_heel = cli.rafter_width / 4.0;
+        let max_heel = cli.rafter_width / 3.0;
         let max_seat = cli.wall_width;
+        let rise: f32;
+        let run: f32;
+        let length: f32;
 
-        let (rise, length) = calculate_rise_and_length(cli.pitch, max_seat);
-        if rise > max_seat {
-            panic!("Birds mouth seat is greater than top plate width");
+        let (tmp_rise, tmp_length) = toa(cli.pitch, None, Some(max_seat));
+        // Ideally, the heel is just the rise.  But the heel can't be greater
+        // than 1/3 of the rafter width.  If it is, we need to recalc the seat.
+        if tmp_rise <= max_heel {
+            rise = tmp_rise;
+            run = max_seat;
+            length = tmp_length;
+        } else {
+            // calc the triangle with the overage as the rise (opposite).
+            let (tmp_run, tmp_length) = toa(cli.pitch, Some(max_heel), None);
+            rise = max_heel;
+            run = tmp_run;
+            length = tmp_length;
         }
 
         // Calculate the distance to the start of the bird's mout heal
         // The run of this triangle is the overhang of the rafter.
-        let (seat_start, _) = calculate_rise_and_length(cli.pitch, cli.overhang);
+        let (seat_start, _) = toa(cli.pitch, None, Some(cli.overhang));
 
         Self {
             heel: rise,
-            seat: max_seat,
+            seat: run,
             length,
             angle: angle_from_pitch(cli.pitch),
             seat_start,

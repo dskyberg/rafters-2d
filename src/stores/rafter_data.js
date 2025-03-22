@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import Rafter2D from "../components/rafter_2d";
+import { invoke } from "@tauri-apps/api/core";
 
 const toZero = (value) => (value == "" ? "0" : value);
 const toNumber = (value) => (typeof value === "string" ? parseFloat(toZero(value)) : value);
@@ -14,6 +14,29 @@ export const useRafterDataStore = create((set, get) => ({
   overhang: 18,
   rafter_width: 10,
   metric: false,
+  rafter: null,
+  scaleFactor: 3,
+  rafterVisible: true,
+  wallsVisible: true,
+  dimensionsVisible: true,
+
+  toggleRafterVisible: () => set({ rafterVisible: !get().rafterVisible }),
+  toggleWallsVisible: () => set({ wallsVisible: !get().wallsVisible }),
+  toggleDimensionsVisible: () => set({ dimensionsVisible: !get().dimensionsVisible }),
+
+  zoomIn: () => set({ scaleFactor: get().scaleFactor + 1 }),
+  zoomOut: () => set({ scaleFactor: get().scaleFactor - 1 }),
+
+  getRafter: async () => {
+    const { pitch, span, wall_width, beam_thickness, beam_width, overhang, rafter_width } = get();
+
+    set({
+      rafter: await invoke("get_rafter", {
+        cli: { pitch, span, wall_width, beam_thickness, beam_width, overhang, rafter_width },
+      }),
+    });
+  },
+
   setValue: (value, input) => {
     switch (value) {
       case "metric":
