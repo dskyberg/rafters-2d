@@ -55,7 +55,7 @@ impl BirdsMouth {
             heel: rise,
             seat: run,
             length,
-            angle: angle_from_pitch(cli.pitch),
+            angle: pitch_to_angle(cli.pitch),
             seat_start,
         }
     }

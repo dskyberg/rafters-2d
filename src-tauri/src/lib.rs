@@ -13,7 +13,9 @@ use rafter::Rafter;
 #[tauri::command]
 fn get_rafter(cli: cli::Cli) -> Rafter {
     eprintln!("Got CLI from frontend: {:?}", cli);
-    Rafter::from_cli(&cli)
+    let rafter = Rafter::from_cli(&cli);
+    eprintln!("Retuning Rafter: {:?}", &rafter);
+    rafter
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]

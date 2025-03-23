@@ -35,7 +35,7 @@ impl RightAngle<f32> for Rafter {
         self.length
     }
     fn angle(&self) -> f32 {
-        angle_from_pitch(self.pitch)
+        pitch_to_angle(self.pitch)
     }
 }
 
@@ -50,7 +50,7 @@ impl Rafter {
         // First calculate the big triangle
         let run = (cli.span / 2.0) - (cli.beam_thickness / 2.0);
         let (rise, length) = toa(cli.pitch, None, Some(run));
-        let angle = angle_from_pitch(cli.pitch);
+        let angle = pitch_to_angle(cli.pitch);
         let beam = Beam::new(cli.beam_thickness, cli.beam_width);
         // The bird's mouth is pretty standard.  We just need to adjust for the
         // width of the rafter, and wall to ensure it meets code.

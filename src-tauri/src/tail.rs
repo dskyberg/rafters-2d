@@ -12,7 +12,7 @@ pub struct Tail {
 
 impl Tail {
     pub fn from_pitch_and_run(pitch: u32, run: f32) -> Self {
-        let angle = angle_from_pitch(pitch);
+        let angle = pitch_to_angle(pitch);
         let (rise, length) = toa(pitch, None, Some(run));
         Self {
             rise,
