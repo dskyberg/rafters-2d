@@ -2,6 +2,7 @@ import { styled, useTheme } from "@mui/material/styles";
 import Stack from "@mui/material/Stack";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
+import TableHead from "@mui/material/TableHead";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
@@ -24,16 +25,16 @@ const ValueTypography = styled(Typography)(({ theme }) => ({
 
 const RafterRow = ({ title, value }) => (
   <TableRow>
-    <TableCell>
+    <TableCell sx={{ width: "100px" }}>
       <KeyTypography>{title}</KeyTypography>
     </TableCell>
-    <TableCell>
+    <TableCell sx={{ width: "100px" }}>
       <ValueTypography>{value}</ValueTypography>
     </TableCell>
   </TableRow>
 );
 
-export default function Raftertable({ rafter }) {
+export default function RafterTable({ rafter }) {
   const theme = useTheme();
 
   if (rafter == null) {

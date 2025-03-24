@@ -3,6 +3,8 @@ import MuiDrawer from "@mui/material/Drawer";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import Tooltip from "@mui/material/Tooltip";
+import Checkbox from "@mui/material/Checkbox";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -25,11 +27,26 @@ const MetricGroup = styled(RadioGroup)(({ theme }) => ({
   margin: theme.spacing(1),
 }));
 
+const CheckboxGroup = styled("div")(({ theme }) => ({
+  margin: theme.spacing(1),
+}));
+
 export default function Drawer() {
   const theme = useTheme();
   const open = useAppStore((state) => state.open);
   const setOpen = useAppStore((state) => state.setOpen);
-  const { metric, setMetric } = useRafterDataStore();
+  const {
+    metric,
+    setMetric,
+    rafterVisible,
+    wallsVisible,
+    dimensionsVisible,
+    trianglesVisible,
+    toggleRafterVisible,
+    toggleWallsVisible,
+    toggleDimensionsVisible,
+    toggleTrianglesVisible,
+  } = useRafterDataStore();
 
   const handleMetricChange = (e) => {
     setMetric(e.target.value == "metric");
@@ -37,6 +54,21 @@ export default function Drawer() {
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  const handleRafterVisible = () => {
+    toggleRafterVisible();
+  };
+
+  const handleWallsVisible = () => {
+    toggleWallsVisible();
+  };
+
+  const handleDimensionsVisible = () => {
+    toggleDimensionsVisible();
+  };
+  const handleTrianglesVisible = () => {
+    toggleTrianglesVisible();
   };
 
   return (
@@ -72,6 +104,64 @@ export default function Drawer() {
         />
         <FormControlLabel id="metric-radio-metric" value="metric" control={<Radio size="small" />} label="Metric" />
       </MetricGroup>
+      <Divider />
+      <CheckboxGroup>
+        <Tooltip title="Toggle Rafter Visibility">
+          <FormControlLabel
+            label="Show Rafter"
+            control={
+              <Checkbox
+                size="small"
+                checked={rafterVisible}
+                onChange={handleRafterVisible}
+                inputProps={{ "aria-label": "show-rafter" }}
+              />
+            }
+          />
+        </Tooltip>
+
+        <Tooltip title="Toggle Walls Visibility">
+          <FormControlLabel
+            label="Show Walls"
+            control={
+              <Checkbox
+                size="small"
+                checked={wallsVisible}
+                onChange={handleWallsVisible}
+                inputProps={{ "aria-label": "show-walls" }}
+              />
+            }
+          />
+        </Tooltip>
+
+        <Tooltip title="Toggle Dimensions Visibility">
+          <FormControlLabel
+            label="Show Dimensions"
+            control={
+              <Checkbox
+                size="small"
+                checked={dimensionsVisible}
+                onChange={handleDimensionsVisible}
+                inputProps={{ "aria-label": "show-dimensions" }}
+              />
+            }
+          />
+        </Tooltip>
+
+        <Tooltip title="Toggle Triangles Visibility">
+          <FormControlLabel
+            label="Show Triangles"
+            control={
+              <Checkbox
+                size="small"
+                checked={trianglesVisible}
+                onChange={handleTrianglesVisible}
+                inputProps={{ "aria-label": "show-triangles" }}
+              />
+            }
+          />
+        </Tooltip>
+      </CheckboxGroup>
     </MuiDrawer>
   );
 }

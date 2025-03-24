@@ -2,23 +2,17 @@ import { useEffect } from "react";
 import { useRafterDataStore } from "../stores/rafter_data";
 
 import { styled, useTheme } from "@mui/material/styles";
-import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import ZoomOutIcon from "@mui/icons-material/ZoomOut";
 import CalculateIcon from "@mui/icons-material/Calculate";
 import Tooltip from "@mui/material/Tooltip";
-import Checkbox from "@mui/material/Checkbox";
 import Box from "@mui/material/Box";
 
-import Raftertable from "./rafter_table";
-import { ToggleOn } from "@mui/icons-material";
+import RafterTable from "./rafter_table";
 
 const NumberField = styled(TextField)(({ theme }) => ({
   width: 220,
@@ -42,19 +36,10 @@ export default function RafterInput() {
     scaleFactor,
     zoomIn,
     zoomOut,
-    rafterVisible,
-    wallsVisible,
-    dimensionsVisible,
-    trianglesVisible,
-    toggleRafterVisible,
-    toggleWallsVisible,
-    toggleDimensionsVisible,
-    toggleTrianglesVisible,
   } = useRafterDataStore();
 
   useEffect(() => {
     getRafter();
-    console.log("rafter", rafter);
   }, []);
 
   const handleCalc = () => {
@@ -66,25 +51,9 @@ export default function RafterInput() {
   };
 
   const handleZoomOut = () => {
-    console.log("scaleFactor", scaleFactor);
-    if (scaleFactor > 2) {
+    if (scaleFactor > 0) {
       zoomOut();
     }
-  };
-
-  const handleRafterVisible = () => {
-    toggleRafterVisible();
-  };
-
-  const handleWallsVisible = () => {
-    toggleWallsVisible();
-  };
-
-  const handleDimensionsVisible = () => {
-    toggleDimensionsVisible();
-  };
-  const handleTrianglesVisible = () => {
-    toggleTrianglesVisible();
   };
 
   return (
@@ -150,62 +119,10 @@ export default function RafterInput() {
             onChange={(e) => setValue("rafter_width", e.target.value)}
           />
         </Stack>
-        <Raftertable rafter={rafter} />
+        <RafterTable rafter={rafter} />
       </Stack>
       <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-        <Stack direction="row" justifyContent={"end"}>
-          <Tooltip title="Toggle Rafter Visibility">
-            <FormControlLabel
-              label="Show Rafter"
-              control={
-                <Checkbox
-                  checked={rafterVisible}
-                  onChange={handleRafterVisible}
-                  inputProps={{ "aria-label": "show-rafter" }}
-                />
-              }
-            />
-          </Tooltip>
-
-          <Tooltip title="Toggle Walls Visibility">
-            <FormControlLabel
-              label="Show Walls"
-              control={
-                <Checkbox
-                  checked={wallsVisible}
-                  onChange={handleWallsVisible}
-                  inputProps={{ "aria-label": "show-walls" }}
-                />
-              }
-            />
-          </Tooltip>
-
-          <Tooltip title="Toggle Dimensions Visibility">
-            <FormControlLabel
-              label="Show Dimensions"
-              control={
-                <Checkbox
-                  checked={dimensionsVisible}
-                  onChange={handleDimensionsVisible}
-                  inputProps={{ "aria-label": "show-dimensions" }}
-                />
-              }
-            />
-          </Tooltip>
-
-          <Tooltip title="Toggle Triangles Visibility">
-            <FormControlLabel
-              label="Show Triangles"
-              control={
-                <Checkbox
-                  checked={trianglesVisible}
-                  onChange={handleTrianglesVisible}
-                  inputProps={{ "aria-label": "show-triangles" }}
-                />
-              }
-            />
-          </Tooltip>
-        </Stack>
+        <Stack direction="row" justifyContent={"end"}></Stack>
         <Stack direction="row" justifyContent={"end"}>
           <Tooltip title="Calculate">
             <IconButton aria-label="calculate" onClick={handleCalc}>

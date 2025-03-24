@@ -29,10 +29,6 @@ export default function WallsLayer() {
   // the x and y coordinates.
   const dimensionPadding = parseInt(theme.spacing(2));
 
-  const scale = (inches) => {
-    return inches * scaleFactor;
-  };
-
   let start_y = dimensionPadding;
   let start_x = dimensionPadding;
   let max_y = rafter.rise + rafter.tail.rise + rafter.angled_width;
@@ -41,18 +37,20 @@ export default function WallsLayer() {
   return (
     <Layer visible={wallsVisible}>
       <Rect
-        x={start_x + scale(overhang + rafter.run)}
+        x={start_x + overhang + rafter.run}
         y={start_y}
-        height={scale(beam_width)}
-        width={scale(beam_thickness)}
+        height={beam_width}
+        width={beam_thickness}
+        strokeWidth={1}
         stroke="red"
       />
       <Rect
-        x={start_x + scale(overhang)}
-        y={start_y + scale(y - rafter.birds_mouth.heel)}
-        height={scale(36)}
-        width={scale(wall_width)}
+        x={start_x + overhang}
+        y={start_y + y - rafter.birds_mouth.heel}
+        height={36}
+        width={wall_width}
         stroke="red"
+        strokeWidth={1}
       />
     </Layer>
   );

@@ -27,7 +27,9 @@ export function toInches(number) {
   }
   if (fract > 0.0) {
     let sixteenths = Math.trunc(fract * 16.0);
-    result += ` ${sixteenths}/16`;
+    if (sixteenths > 0) {
+      result += ` ${sixteenths}/16`;
+    }
   }
   if (inches > 0 || fract > 0.0) {
     result += '"';

@@ -7,7 +7,7 @@ import { useRafterDataStore } from "../stores/rafter_data";
 import { toInches } from "../utils";
 import DimensionsLayer from "./dimensions_layer";
 import WallsLayer from "./walls_layer";
-import TrianglesLayer from "./trianglesLayer";
+import TrianglesLayer from "./triangles_layer";
 
 export default function Rafter2D() {
   let theme = useTheme();
@@ -34,10 +34,6 @@ export default function Rafter2D() {
   // the x and y coordinates.
   const dimensionPadding = parseInt(theme.spacing(2));
 
-  const scale = (inches) => {
-    return inches * scaleFactor;
-  };
-
   if (rafter == null) {
     return (
       <div sx={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
@@ -54,26 +50,32 @@ export default function Rafter2D() {
   let y = max_y - rafter.birds_mouth.seat_start;
 
   let rafter_points = [
-    [start_x, start_y + scale(rafter.rise + rafter.tail.rise + rafter.angled_width)],
-    [start_x, start_y + scale(rafter.rise + rafter.tail.rise)],
-    [start_x + scale(overhang + rafter.run), start_y],
-    [start_x + scale(overhang + rafter.run), start_y + scale(rafter.angled_width)],
+    [start_x, start_y + rafter.rise + rafter.tail.rise + rafter.angled_width],
+    [start_x, start_y + rafter.rise + rafter.tail.rise],
+    [start_x + overhang + rafter.run, start_y],
+    [start_x + overhang + rafter.run, start_y + rafter.angled_width],
   ].flat();
 
   let birds_mouth_points = [
-    [start_x + scale(x), start_y + scale(y)],
-    [start_x + scale(x), start_y + scale(y - rafter.birds_mouth.heel)],
-    [start_x + scale(x + rafter.birds_mouth.seat), start_y + scale(y - rafter.birds_mouth.heel)],
+    [start_x + x, start_y + y],
+    [start_x + x, start_y + y - rafter.birds_mouth.heel],
+    [start_x + x + rafter.birds_mouth.seat, start_y + y - rafter.birds_mouth.heel],
   ].flat();
 
   return (
     <div sx={{ display: "flex", flexDirection: "column", justifyContent: "start" }}>
       <div id="rafter-container">
-        <Stage container="rafter-container" width={windowSize.width} height={windowSize.height}>
+        <Stage
+          container="rafter-container"
+          width={windowSize.width}
+          height={windowSize.height}
+          scaleX={scaleFactor}
+          scaleY={scaleFactor}
+        >
           <DimensionsLayer />
           <Layer visible={rafterVisible}>
             <Line points={rafter_points} closed strokeWidth={0} fill="grey" />
-            <Line points={birds_mouth_points} closed stroke="white" fill="white" />
+            <Line points={birds_mouth_points} closed strokeWidth={0} stroke="white" fill="white" />
           </Layer>
           <WallsLayer />
           <TrianglesLayer />

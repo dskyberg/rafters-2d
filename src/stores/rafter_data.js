@@ -15,7 +15,7 @@ export const useRafterDataStore = create((set, get) => ({
   rafter_width: 9.25,
   metric: false,
   rafter: null,
-  scaleFactor: 3,
+  scaleFactor: 1.0,
   rafterVisible: true,
   wallsVisible: true,
   dimensionsVisible: true,
@@ -28,17 +28,24 @@ export const useRafterDataStore = create((set, get) => ({
   toggleDimensionsVisible: () => set({ dimensionsVisible: !get().dimensionsVisible }),
   toggleTrianglesVisible: () => set({ trianglesVisible: !get().trianglesVisible }),
 
-  zoomIn: () => set({ scaleFactor: get().scaleFactor + 1 }),
-  zoomOut: () => set({ scaleFactor: get().scaleFactor - 1 }),
+  zoomIn: () => {
+    let scaleFactor = get().scaleFactor + 0.5;
+    console.log("scaleFactor", scaleFactor);
+    set({ scaleFactor });
+  },
+  zoomOut: () => {
+    let scaleFactor = get().scaleFactor - 0.5;
+    console.log("scaleFactor", scaleFactor);
+    set({ scaleFactor });
+  },
 
   getRafter: async () => {
     const { pitch, span, wall_width, beam_thickness, beam_width, overhang, rafter_width } = get();
-
-    set({
-      rafter: await invoke("get_rafter", {
-        cli: { pitch, span, wall_width, beam_thickness, beam_width, overhang, rafter_width },
-      }),
+    let rafter = await invoke("get_rafter", {
+      cli: { pitch, span, wall_width, beam_thickness, beam_width, overhang, rafter_width },
     });
+    console.log("rafter", rafter);
+    set({ rafter });
   },
 
   setValue: (value, input) => {
