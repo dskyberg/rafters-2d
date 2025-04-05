@@ -42,7 +42,7 @@ export const useRafterDataStore = create((set, get) => ({
   getRafter: async () => {
     const { pitch, span, wall_width, beam_thickness, beam_width, overhang, rafter_width } = get();
     let rafter = await invoke("get_rafter", {
-      cli: { pitch, span, wall_width, beam_thickness, beam_width, overhang, rafter_width },
+      input: { pitch, span, wall_width, beam_thickness, beam_width, overhang, rafter_width },
     });
     console.log("rafter", rafter);
     set({ rafter });
