@@ -1,19 +1,11 @@
+use rafter_lib::{Rafter, RafterInput};
 use tauri::Manager;
-
-mod beam;
-mod birds_mouth;
-mod cli;
-mod rafter;
-mod right_angle;
-mod tail;
 mod utils;
 
-use rafter::Rafter;
-
 #[tauri::command]
-fn get_rafter(cli: cli::Cli) -> Rafter {
-    eprintln!("Got CLI from frontend: {:?}", cli);
-    let rafter = Rafter::from_cli(&cli);
+fn get_rafter(input: RafterInput) -> Rafter {
+    eprintln!("Got RafterInput from frontend: {:?}", &input);
+    let rafter = Rafter::from_input(&input);
     eprintln!("Retuning Rafter: {:?}", &rafter);
     rafter
 }
