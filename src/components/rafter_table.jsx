@@ -53,7 +53,7 @@ export default function RafterTable({ rafter }) {
         <TableContainer>
           <Table>
             <TableBody>
-              <RafterRow title={"Angle"} value={`${rafter.angle}°`} />
+              <RafterRow title={"Angle"} value={`${(Math.round(rafter.angle * 100) / 100).toFixed(2)}°`} />
               <RafterRow title={"Angled Width"} value={toInches(rafter.angled_width)} />
               <RafterRow title={"Bird's Mouth Heel"} value={toInches(rafter.birds_mouth.heel)} />
               <RafterRow title={"Bird's Mouth Seat"} value={toInches(rafter.birds_mouth.seat)} />
